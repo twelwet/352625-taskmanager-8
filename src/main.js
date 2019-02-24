@@ -69,7 +69,7 @@ const renderFilters = (data, container) => {
 
 renderFilters(filters, filtersContainer);
 
-const getRandom = (min, max) => (Math.round((max - 1) * Math.random()) + min);
+const getRandom = (min, max) => (Math.floor(Math.random() * max + min));
 
 const taskData = {
   color: `black`,
