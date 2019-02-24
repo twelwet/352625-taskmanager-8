@@ -1,6 +1,6 @@
 'use strict';
 
-const filtersList = [
+const filters = [
   {
     name: `all`,
     checked: true,
@@ -48,7 +48,8 @@ const filtersList = [
 const filtersContainer = document.querySelector(`.main__filter`);
 
 const renderFilters = (data, container) => {
-  for (let value of data) {
+  const fragment = document.createDocumentFragment();
+  for (const value of data) {
     const wrapper = document.createElement(`div`);
     wrapper.innerHTML = `
     <input
@@ -61,30 +62,33 @@ const renderFilters = (data, container) => {
     <label for="filter__${value.name}" class="filter__label"
       >${value.name} <span class="filter__archive-count">${value.count}</span></label>
     `;
-    container.appendChild(wrapper);
+    fragment.appendChild(wrapper);
   }
+  container.appendChild(fragment);
 };
 
-renderFilters(filtersList, filtersContainer);
+renderFilters(filters, filtersContainer);
+
+const getRandom = (min, max) => (Math.round((max - 1) * Math.random()) + min);
+
+const taskData = {
+  color: `black`,
+  text: `This is example of new task, you can add picture, set date and time, add tags.`,
+  deadline: false,
+  repeat: false
+};
 
 const getTasksList = () => {
-  const tasksList = [];
-  let random = Math.round(9 * Math.random()) + 1;
-  for (let i = 0; i < random; i++) {
-    tasksList[i] = {
-      color: `black`,
-      text: `This is example of new task, you can add picture, set date and time, add tags.`,
-      deadline: false,
-      repeat: false
-    };
-  }
-  return tasksList;
+  const tasks = new Array(getRandom(1, 10));
+  tasks.fill(taskData);
+  return tasks;
 };
 
 const tasksContainer = document.querySelector(`.board__tasks`);
 
 const renderTasks = (data, container) => {
   container.innerHTML = ``;
+  const fragment = document.createDocumentFragment();
   for (let value of data) {
     const wrapper = document.createElement(`div`);
     wrapper.innerHTML = `
@@ -325,8 +329,9 @@ const renderTasks = (data, container) => {
       </form>
     </article>
     `;
-    container.appendChild(wrapper);
+    fragment.appendChild(wrapper);
   }
+  container.appendChild(fragment);
 };
 
 renderTasks(getTasksList(), tasksContainer);
