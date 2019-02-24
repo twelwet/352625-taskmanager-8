@@ -57,7 +57,7 @@ const getFilterTemplate = (data) => {
     name="filter"
     ${data.checked ? `checked` : ``} ${data.disabled ? `disabled` : ``}
   />
-  <label for="filter__${name}" class="filter__label"
+  <label for="filter__${data.name}" class="filter__label"
     >${data.name} <span class="filter__archive-count">${data.count}</span></label>
   `;
   return template;
@@ -72,6 +72,7 @@ const createFragment = (data, template) => {
 };
 
 const render = (data, template, container) => {
+  container.innerHTML = ``;
   container.appendChild(createFragment(data, template));
 };
 
