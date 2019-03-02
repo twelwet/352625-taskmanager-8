@@ -67,15 +67,14 @@ const getRandomDate = () => {
 const getRandomHashtages = (max = 3) => {
   const allHashtagsSet = new Set([`homework`, `theory`, `practice`, `intensive`, `keks`]);
   const allHashtags = [...allHashtagsSet];
-  const randomHashtags = [];
   const getRandomIndex = () => {
     return getRandomInteger(0, allHashtags.length - 1);
   };
-  // [ВОПРОС] Как в данном случае обойтись без цикла с `i` ?
-  for (let i = 0; i < getRandomInteger(0, max); i++) {
-    const randomHashtag = allHashtags.splice(getRandomIndex(), 1).toString();
-    randomHashtags.push(randomHashtag);
-  }
+  let randomHashtags = [...(new Array(getRandomInteger(0, max)))];
+  randomHashtags = randomHashtags.map((it) => {
+    it = allHashtags.splice(getRandomIndex(), 1).toString();
+    return it;
+  });
   return randomHashtags;
 };
 
@@ -114,11 +113,11 @@ const createTask = () => {
 };
 
 const createTasks = () => {
-  const tasks = [];
-  // [ВОПРОС] Какой метод массива использовать, чтобы обойтись без цикла с `i` ?
-  for (let i = 0; i < getRandomInteger(1, 10); i++) {
-    tasks.push(createTask());
-  }
+  let tasks = [...(new Array(getRandomInteger(0, 10)))];
+  tasks = tasks.map((it) => {
+    it = createTask();
+    return it;
+  });
   return tasks;
 };
 
