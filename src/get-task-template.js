@@ -1,9 +1,38 @@
 // get-task-template.js
 
+const getHashtagsMarkdown = (data) => data.hashtags.map((it) => `
+  <span class="card__hashtag-inner">
+    <input
+      type="hidden"
+      name="hashtag"
+      value="repeat"
+      class="card__hashtag-hidden-input"
+    />
+    <button type="button" class="card__hashtag-name">
+      #${it}
+      </button>
+    <button type="button" class="card__hashtag-delete">
+      delete
+    </button>
+  </span>`
+).join(``);
+
+const getDaysMarkdown = (data) => data.repeatingDays.map((it) => `
+  <input
+    class="visually-hidden card__repeat-day-input"
+    type="checkbox"
+    id="repeat-${it[0]}-1"
+    name="repeat"
+    value="${it[0]}"
+    ${it[1] ? `checked` : ``}
+  />
+  <label class="card__repeat-day" for="repeat-${it[0]}-1">${it[0]}</label>`
+).join(``);
+
 const getTaskTemplate = (data) => {
   const template = document.createElement(`template`);
   template.innerHTML = `
-  <article class="card card--${data.color} ${data.deadline ? `card--deadline` : ``} ${data.repeat ? `card--repeat` : ``}">
+  <article class="card card--${data.color} ${data.isDeadline ? `card--deadline` : ``} ${data.isRepeat ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
@@ -30,7 +59,7 @@ const getTaskTemplate = (data) => {
               class="card__text"
               placeholder="Start typing your text here..."
               name="text"
-            >${data.text}</textarea>
+            >${data.label}</textarea>
           </label>
         </div>
         <div class="card__settings">
@@ -39,13 +68,14 @@ const getTaskTemplate = (data) => {
               <button class="card__date-deadline-toggle" type="button">
                 date: <span class="card__date-status">no</span>
               </button>
-              <fieldset class="card__date-deadline" disabled>
+              <fieldset class="card__date-deadline">
                 <label class="card__input-deadline-wrap">
                   <input
                     class="card__date"
                     type="text"
                     placeholder="23 September"
                     name="date"
+                    value="${data.dueDate.date} ${data.dueDate.month}"
                   />
                 </label>
                 <label class="card__input-deadline-wrap">
@@ -54,99 +84,22 @@ const getTaskTemplate = (data) => {
                     type="text"
                     placeholder="11:15 PM"
                     name="time"
+                    value="${data.dueDate.hours}:${data.dueDate.minutes}"
                   />
                 </label>
               </fieldset>
               <button class="card__repeat-toggle" type="button">
-                repeat:<span class="card__repeat-status">no}</span>
+                repeat:<span class="card__repeat-status">${data.isRepeat ? `yes` : `no`}</span>
               </button>
               <fieldset class="card__repeat-days" disabled}>
                 <div class="card__repeat-days-inner">
-                  <input
-                    class="visually-hidden card__repeat-day-input"
-                    type="checkbox"
-                    id="repeat-mo-1"
-                    name="repeat"
-                    value="mo"
-                  />
-                  <label class="card__repeat-day" for="repeat-mo-1"
-                    >mo</label>
-                  <input
-                    class="visually-hidden card__repeat-day-input"
-                    type="checkbox"
-                    id="repeat-tu-1"
-                    name="repeat"
-                    value="tu"
-                    checked
-                  />
-                  <label class="card__repeat-day" for="repeat-tu-1"
-                    >tu</label>
-                  <input
-                    class="visually-hidden card__repeat-day-input"
-                    type="checkbox"
-                    id="repeat-we-1"
-                    name="repeat"
-                    value="we"
-                  />
-                  <label class="card__repeat-day" for="repeat-we-1"
-                    >we</label>
-                  <input
-                    class="visually-hidden card__repeat-day-input"
-                    type="checkbox"
-                    id="repeat-th-1"
-                    name="repeat"
-                    value="th"
-                  />
-                  <label class="card__repeat-day" for="repeat-th-1"
-                    >th</label>
-                  <input
-                    class="visually-hidden card__repeat-day-input"
-                    type="checkbox"
-                    id="repeat-fr-1"
-                    name="repeat"
-                    value="fr"
-                    checked
-                  />
-                  <label class="card__repeat-day" for="repeat-fr-1"
-                    >fr</label>
-                  <input
-                    class="visually-hidden card__repeat-day-input"
-                    type="checkbox"
-                    name="repeat"
-                    value="sa"
-                    id="repeat-sa-1"
-                  />
-                  <label class="card__repeat-day" for="repeat-sa-1"
-                    >sa</label>
-                  <input
-                    class="visually-hidden card__repeat-day-input"
-                    type="checkbox"
-                    id="repeat-su-1"
-                    name="repeat"
-                    value="su"
-                    checked
-                  />
-                  <label class="card__repeat-day" for="repeat-su-1"
-                    >su</label>
+                ${getDaysMarkdown(data)}
                 </div>
               </fieldset>
             </div>
             <div class="card__hashtag">
               <div class="card__hashtag-list">
-                <span class="card__hashtag-inner">
-                  <input
-                    type="hidden"
-                    name="hashtag"
-                    value="repeat"
-                    class="card__hashtag-hidden-input"
-                  />
-                  <button type="button" class="card__hashtag-name">
-                    #repeat
-                  </button>
-                  <button type="button" class="card__hashtag-delete">
-                    delete
-                  </button>
-                </span>
+                ${getHashtagsMarkdown(data)}
               </div>
               <label>
                 <input
@@ -158,14 +111,14 @@ const getTaskTemplate = (data) => {
               </label>
             </div>
           </div>
-          <label class="card__img-wrap card__img-wrap--empty">
+          <label class="card__img-wrap">
             <input
               type="file"
               class="card__img-input visually-hidden"
               name="img"
             />
             <img
-              src="img/add-photo.svg"
+              src="${data.picture}"
               alt="task picture"
               class="card__img"
             />
