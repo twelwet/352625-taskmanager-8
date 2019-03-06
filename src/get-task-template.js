@@ -1,6 +1,8 @@
 // get-task-template.js
 
-const getHashtagsMarkdown = (data) => data.hashtags.map((it) => `
+import {COLORS} from './mock-data.js';
+
+const getHashtagsMarkdown = ({hashtags}) => hashtags.map((it) => `
   <span class="card__hashtag-inner">
     <input
       type="hidden"
@@ -17,16 +19,31 @@ const getHashtagsMarkdown = (data) => data.hashtags.map((it) => `
   </span>`
 ).join(``);
 
-const getDaysMarkdown = (data) => data.repeatingDays.map((it) => `
+const getDaysMarkdown = ({repeatingDays}) => repeatingDays.map(([day, value]) => `
   <input
     class="visually-hidden card__repeat-day-input"
     type="checkbox"
-    id="repeat-${it[0]}-1"
+    id="repeat-${day}-1"
     name="repeat"
-    value="${it[0]}"
-    ${it[1] ? `checked` : ``}
+    value="${day}"
+    ${value ? `checked` : ``}
   />
-  <label class="card__repeat-day" for="repeat-${it[0]}-1">${it[0]}</label>`
+  <label class="card__repeat-day" for="repeat-${day}-1">${day}</label>`
+).join(``);
+
+const getColorsMarkdown = () => COLORS.map((it) => `
+  <input
+    type="radio"
+    id="color-${it}-1"
+    class="card__color-input card__color-input--${it} visually-hidden"
+    name="color"
+    value="${it}"
+    ${(it === `black`) ? `checked` : ``}
+  />
+  <label
+    for="color-${it}-1"
+    class="card__color card__color--${it}"
+  >${it}</label>`
 ).join(``);
 
 const getTaskTemplate = (data) => {
@@ -91,7 +108,7 @@ const getTaskTemplate = (data) => {
               <button class="card__repeat-toggle" type="button">
                 repeat:<span class="card__repeat-status">${data.isRepeat ? `yes` : `no`}</span>
               </button>
-              <fieldset class="card__repeat-days" disabled}>
+              <fieldset class="card__repeat-days" disabled>
                 <div class="card__repeat-days-inner">
                 ${getDaysMarkdown(data)}
                 </div>
@@ -126,62 +143,7 @@ const getTaskTemplate = (data) => {
           <div class="card__colors-inner">
             <h3 class="card__colors-title">Color</h3>
             <div class="card__colors-wrap">
-              <input
-                type="radio"
-                id="color-black-1"
-                class="card__color-input card__color-input--black visually-hidden"
-                name="color"
-                value="black"
-                checked
-              />
-              <label
-                for="color-black-1"
-                class="card__color card__color--black"
-              >black</label>
-              <input
-                type="radio"
-                id="color-yellow-1"
-                class="card__color-input card__color-input--yellow visually-hidden"
-                name="color"
-                value="yellow"
-              />
-              <label
-                for="color-yellow-1"
-                class="card__color card__color--yellow"
-              >yellow</label>
-              <input
-                type="radio"
-                id="color-blue-1"
-                class="card__color-input card__color-input--blue visually-hidden"
-                name="color"
-                value="blue"
-              />
-              <label
-                for="color-blue-1"
-                class="card__color card__color--blue"
-              >blue</label>
-              <input
-                type="radio"
-                id="color-green-1"
-                class="card__color-input card__color-input--green visually-hidden"
-                name="color"
-                value="green"
-              />
-              <label
-                for="color-green-1"
-                class="card__color card__color--green"
-              >green</label>
-              <input
-                type="radio"
-                id="color-pink-1"
-                class="card__color-input card__color-input--pink visually-hidden"
-                name="color"
-                value="pink"
-              />
-              <label
-                for="color-pink-1"
-                class="card__color card__color--pink"
-              >pink</label>
+              ${getColorsMarkdown()}
             </div>
           </div>
         </div>
