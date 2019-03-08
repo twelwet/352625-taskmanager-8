@@ -1,9 +1,9 @@
-// task.js
+// task-edit.js
 
 import {COLORS} from './mock-data.js';
 import {createElement} from './utils.js';
 
-class Task {
+class TaskEdit {
   constructor(data) {
     this._label = data.label;
     this._dueDate = data.dueDate;
@@ -18,26 +18,27 @@ class Task {
 
     this._element = null;
     this._state = {
-      isEdit: false
+      isEdit: true
     };
 
-    this._onEdit = null;
+    this._onSubmit = null;
   }
 
-  _onEditButtonClick() {
+  _onSubmitButtonClick(evt) {
+    evt.preventDefault();
     // [Вопрос-1] Делал по демке, не совсем понял как работает.
     // [Вопрос-2] Редактор кода ругается на эту строчку.
-    // [Вопрос-3] Почему у функции this._onEdit() здесь нет параметра, а в сеттере set onEdit(fn) параметр есть?
-    typeof this._onEdit === `function` && this._onEdit();
+    // [Вопрос-3] Почему у функции this._onSubmit() здесь нет параметра, а в сеттере set onSubmit(fn) параметр есть?
+    typeof this._onSubmit === `function` && this._onSubmit();
   }
 
   get element() {
     return this._element;
   }
 
-  // [Вопрос-4] Что за аргумент fn у this._onEdit()?
-  set onEdit(fn) {
-    this._onEdit = fn;
+  // [Вопрос-4] Что за аргумент fn у this._onSubmit()?
+  set onSubmit(fn) {
+    this._onSubmit = fn;
   }
 
   get template() {
@@ -176,11 +177,11 @@ class Task {
   }
 
   bind() {
-    this._element.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEditButtonClick.bind(this));
+    this._element.querySelector(`.card__form`).addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
   }
 
   unbind() {
-    this._element.querySelector(`.card__btn--edit`).removeEventListener(`click`, this._onEditButtonClick.bind(this));
+    this._element.querySelector(`.card__form`).removeEventListener(`submit`, this._onSubmitButtonClick.bind(this));
   }
 
   render() {
@@ -195,4 +196,4 @@ class Task {
   }
 }
 
-export default Task;
+export default TaskEdit;

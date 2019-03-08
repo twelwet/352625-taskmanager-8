@@ -1,6 +1,5 @@
 // filter.js
 
-import {downloaded} from './mock-data.js';
 import {createElement} from './utils.js';
 
 class Filter {
@@ -9,6 +8,8 @@ class Filter {
     this._checked = data.checked;
     this._disabled = data.disabled;
     this._count = data.count;
+
+    this._element = null;
   }
 
   get template() {
@@ -22,29 +23,27 @@ class Filter {
     />
     <label for="filter__${this._name}" class="filter__label"
       >${this._name} <span class="filter__archive-count">${this._count}</span></label>
-    `;
+    `.trim();
   }
 
-  render(container) {
-    if (this._element) {
-      container.removeChild(this._element);
-      this._element = null;
-    }
+  bind() {
+    // Добавление обработчиков
+  }
+
+  unbind() {
+    // Удаление обработчиков
+  }
+
+  render() {
     this._element = createElement(this.template);
-    container.appendChild(this._element);
+    this.bind();
+    return this._element;
   }
 
-  unrender(container) {
-    if (this._element) {
-      container.removeChild(this._element);
-      this._element = null;
-    }
+  unrender() {
+    this.unbind();
+    this._element = null;
   }
 }
-
-const filters = downloaded.filters.map((item) => {
-  item = new Filter(item);
-  return item;
-});
 
 export default Filter;

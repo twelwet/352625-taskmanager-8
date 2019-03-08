@@ -82,7 +82,7 @@ const createTask = () => {
   const task = {
     label: LABELS[getRandomIndex(LABELS)],
     dueDate: getRandomDate(),
-    hashtags: getRandomHashtags(),
+    tags: getRandomHashtags(),
     picture: `http://picsum.photos/100/100?r=${Math.random()}`,
     color: COLORS[getRandomIndex(COLORS)],
     repeatingDays: [

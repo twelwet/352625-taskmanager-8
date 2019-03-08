@@ -1,36 +1,34 @@
 // main.js
 
-import {getRandomInteger} from './utils.js';
 import {downloaded} from './mock-data.js';
 import Task from './task.js';
+import TaskEdit from './task-edit.js';
 import Filter from './filter.js';
 
-const tasks = downloaded.tasks.map((item) => {
-  item = new Task(item);
-  return item;
-});
+const filtersContainer = document.querySelector(`.main__filter`);
 
 const filters = downloaded.filters.map((item) => {
   item = new Filter(item);
   return item;
 });
 
-const filtersContainer = document.querySelector(`.main__filter`);
+filters.forEach((item) => filtersContainer.appendChild(item.render()));
+
 const tasksContainer = document.querySelector(`.board__tasks`);
 
-filters.forEach((item) => item.render(filtersContainer));
-tasks.forEach((item) => item.render(tasksContainer));
+const taskComponent = new Task(downloaded.tasks[0]);
+const editTaskComponent = new TaskEdit(downloaded.tasks[0]);
 
-filtersContainer.querySelectorAll(`input`).forEach((item) => {
-  item.addEventListener(`click`, () => {
-    tasks.forEach((it) => it.unrender(tasksContainer));
-    // Имитация сортировки:
-    tasks.forEach((it) => {
-      if (getRandomInteger(0, 1)) {
-        it.render(tasksContainer);
-      } else {
-        it.unrender(tasksContainer);
-      }
-    });
-  });
-});
+tasksContainer.appendChild(taskComponent.render());
+
+taskComponent.onEdit = () => {
+  editTaskComponent.render();
+  tasksContainer.replaceChild(editTaskComponent.element, taskComponent.element);
+  taskComponent.unrender();
+};
+
+editTaskComponent.onSubmit = () => {
+  taskComponent.render();
+  tasksContainer.replaceChild(taskComponent.element, editTaskComponent.element);
+  editTaskComponent.unrender();
+};
