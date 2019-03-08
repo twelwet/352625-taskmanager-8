@@ -109,6 +109,6 @@ const createTasks = () => {
 };
 
 // Имитация загрузки данных с сервера
-const tasks = createTasks();
+const downloaded = {filters, tasks: createTasks()};
 
-export {filters, COLORS, tasks, createTasks};
+export {COLORS, downloaded};

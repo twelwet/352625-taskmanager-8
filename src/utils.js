@@ -1,16 +1,16 @@
 // utils.js
 
-const createFragment = (data, template) => {
-  const fragment = document.createDocumentFragment();
-  data.forEach((item) => {
-    fragment.appendChild(template(item).content);
-  });
-  return fragment;
-};
-
-const render = (data, template, container) => {
-  container.innerHTML = ``;
-  container.appendChild(createFragment(data, template));
+const createElement = (template) => {
+  // [Вопрос] Как избавиться от оберток div-ов так и не придумал.
+  // 1. Пробовал const wrapper = document.createElement(`template`);
+  //    но все ломается при перерисовке
+  // 2. Пробовал оставить const wrapper = document.createElement(`div`);
+  //    и делать return wrapper.firstChild;
+  //    тоже не помогло.
+  // Посоветуй как быть?
+  const wrapper = document.createElement(`div`);
+  wrapper.innerHTML = (template);
+  return wrapper;
 };
 
 const getRandomInteger = (min, max) => {
@@ -19,4 +19,4 @@ const getRandomInteger = (min, max) => {
   return rand;
 };
 
-export {render, getRandomInteger};
+export {createElement, getRandomInteger};
