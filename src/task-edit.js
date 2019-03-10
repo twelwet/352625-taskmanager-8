@@ -1,10 +1,11 @@
 // task-edit.js
 
-import {createElement} from './utils.js';
+import Component from './component.js';
 import taskTemplate from './task-template.js';
 
-class TaskEdit {
+class TaskEdit extends Component {
   constructor(data) {
+    super();
     this._label = data.label;
     this._dueDate = data.dueDate;
     this._tags = data.tags;
@@ -16,7 +17,6 @@ class TaskEdit {
     this._isDone = data.isDone;
     this._isDeadline = data.isDeadline;
 
-    this._element = null;
     this._state = {
       isEdit: true
     };
@@ -32,10 +32,6 @@ class TaskEdit {
     }
   }
 
-  get element() {
-    return this._element;
-  }
-
   set onSubmit(fn) {
     this._onSubmit = fn;
   }
@@ -44,23 +40,12 @@ class TaskEdit {
     return taskTemplate(this);
   }
 
-  bind() {
+  createListeners() {
     this._element.querySelector(`.card__form`).addEventListener(`submit`, this._onSubmitButtonClick);
   }
 
-  unbind() {
+  removeListeners() {
     this._element.querySelector(`.card__form`).removeEventListener(`submit`, this._onSubmitButtonClick);
-  }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
   }
 }
 
