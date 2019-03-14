@@ -12,17 +12,22 @@ class Task extends Component {
     this._picture = data.picture;
     this._color = data.color;
     this._repeatingDays = data.repeatingDays;
-    this._isRepeat = data.isRepeat;
     this._isFavorite = data.isFavorite;
     this._isDone = data.isDone;
     this._isDeadline = data.isDeadline;
 
     this._state = {
-      isEdit: false
+      isEdit: false,
+      isDate: false,
+      isRepeated: this._isRepeated()
     };
 
     this._onEdit = null;
     this._onEditButtonClick = this._onEditButtonClick.bind(this);
+  }
+
+  _isRepeated() {
+    return Object.values(this._repeatingDays).some((it) => it === true);
   }
 
   _onEditButtonClick() {
@@ -45,6 +50,13 @@ class Task extends Component {
 
   removeListeners() {
     this._element.querySelector(`.card__btn--edit`).removeEventListener(`click`, this._onEditButtonClick);
+  }
+
+  update(data) {
+    this._label = data.label;
+    this._color = data.color;
+    this._repeatingDays = data.repeatingDays;
+    this._state.isRepeated = this._isRepeated();
   }
 }
 
