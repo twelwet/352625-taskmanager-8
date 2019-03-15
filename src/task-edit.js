@@ -2,6 +2,7 @@
 
 import Component from './component.js';
 import taskTemplate from './task-template.js';
+import flatpickr from 'flatpickr';
 
 class TaskEdit extends Component {
   constructor(data) {
@@ -27,34 +28,6 @@ class TaskEdit extends Component {
     this._onChangeRepeated = this._onChangeRepeated.bind(this);
   }
 
-  _processForm(formData) {
-    const entry = {
-      label: ``,
-      color: ``,
-      repeatingDays: {
-        mo: false,
-        tu: false,
-        we: false,
-        th: false,
-        fr: false,
-        sa: false,
-        su: false
-      }
-    };
-
-    const taskEditMapper = TaskEdit.createMapper(entry);
-
-    for (const pair of formData.entries()) {
-      const [property, value] = pair;
-
-      if (taskEditMapper[property]) {
-        taskEditMapper[property](value);
-      }
-    }
-
-    return entry;
-  }
-
   _isRepeated() {
     return Object.values(this._repeatingDays).some((it) => it === true);
   }
@@ -63,7 +36,7 @@ class TaskEdit extends Component {
     evt.preventDefault();
 
     const formData = new FormData(this._element.querySelector(`.card__form`));
-    const newData = this._processForm(formData);
+    const newData = TaskEdit.processForm(formData);
 
     if (typeof this._onSubmit === `function`) {
       this._onSubmit(newData);
@@ -102,6 +75,21 @@ class TaskEdit extends Component {
     this._element.querySelector(`.card__form`).addEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.card__date-deadline-toggle`).addEventListener(`click`, this._onChangeDate);
     this._element.querySelector(`.card__repeat-toggle`).addEventListener(`click`, this._onChangeRepeated);
+
+    if (this._state.isDate) {
+      flatpickr(`.card__date`, {
+        altInput: true, altFormat: `j F`,
+        dateFormat: `j F`
+      });
+      flatpickr(`.card__time`, {
+        enableTime: true,
+        noCalendar: true,
+        altInput: true,
+        altFormat: `h:i K`,
+        dateFormat: `h:i K`
+      });
+    }
+
   }
 
   removeListeners() {
@@ -116,11 +104,34 @@ class TaskEdit extends Component {
     this._color = data.color;
     this._repeatingDays = data.repeatingDays;
     this._state.isRepeated = this._isRepeated();
+  }
 
-    if (this._state.isDate) {
-      flatpickr(`.card__date`, { altInput: true, altFormat: `j F`, dateFormat: `j F` });
-      flatpickr(`.card__time`, { enableTime: true, noCalendar: true, altInput: true, altFormat: `h:i K`, dateFormat: `h:i K`});
+  static processForm(formData) {
+    const entry = {
+      label: ``,
+      color: ``,
+      repeatingDays: {
+        mo: false,
+        tu: false,
+        we: false,
+        th: false,
+        fr: false,
+        sa: false,
+        su: false
+      }
+    };
+
+    const taskEditMapper = TaskEdit.createMapper(entry);
+
+    for (const pair of formData.entries()) {
+      const [property, value] = pair;
+
+      if (taskEditMapper[property]) {
+        taskEditMapper[property](value);
+      }
     }
+
+    return entry;
   }
 
   static createMapper(target) {

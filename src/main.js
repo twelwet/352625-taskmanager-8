@@ -7,8 +7,6 @@ import Filter from './filter.js';
 
 const task = downloaded.tasks[0];
 
-console.log(task.color)
-
 const filtersContainer = document.querySelector(`.main__filter`);
 
 const filters = downloaded.filters.map((item) => {
@@ -32,7 +30,6 @@ taskComponent.onEdit = () => {
 };
 
 editTaskComponent.onSubmit = (newObject) => {
-  console.log(newObject.color)
   task.label = newObject.label;
   task.color = newObject.color;
   task.repeatingDays = newObject.repeatingDays;

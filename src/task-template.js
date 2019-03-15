@@ -1,6 +1,9 @@
 // task-template.js
 
 import {COLORS} from './mock-data.js';
+import moment from 'moment';
+
+const mockDate = `2019-01-01 08:45`;
 
 const taskTemplate = (data) => `
 <article class="card card--${data._color} ${data._isDeadline ? `card--deadline` : ``} ${data._state.isRepeated ? `card--repeat` : ``} ${data._state.isEdit ? `card--edit` : ``}">
@@ -46,7 +49,7 @@ const taskTemplate = (data) => `
                   type="text"
                   placeholder="23 September"
                   name="date"
-                  value=""
+                  value="${moment(mockDate).format(`D MMMM`)}"
                 />
               </label>
               <label class="card__input-deadline-wrap">
@@ -55,7 +58,7 @@ const taskTemplate = (data) => `
                   type="text"
                   placeholder="11:15 PM"
                   name="time"
-                  value=""
+                  value="${moment(mockDate).format(`HH:mm`)}"
                 />
               </label>
             </fieldset>
@@ -66,17 +69,17 @@ const taskTemplate = (data) => `
             <div class="card__repeat-days-inner">
               <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-mo-5" name="repeat" value="mo" ${data._repeatingDays.mo && `checked`}/>
               <label class="card__repeat-day" for="repeat-mo-5">mo</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-tu-5" name="repeat" value="tu" ${data._repeatingDays.tu && `checked`} />
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-tu-5" name="repeat" value="tu" ${data._repeatingDays.tu && `checked`}/>
               <label class="card__repeat-day" for="repeat-tu-5">tu</label>
               <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-we-5" name="repeat" value="we" ${data._repeatingDays.we && `checked`}/>
               <label class="card__repeat-day" for="repeat-we-5">we</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-th-5" name="repeat" value="th" ${data._repeatingDays.th && `checked`} />
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-th-5" name="repeat" value="th" ${data._repeatingDays.th && `checked`}/>
               <label class="card__repeat-day" for="repeat-th-5">th</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-fr-5" name="repeat" value="fr" ${data._repeatingDays.fr && `checked`} />
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-fr-5" name="repeat" value="fr" ${data._repeatingDays.fr && `checked`}/>
               <label class="card__repeat-day" for="repeat-fr-5">fr</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-sa-5" name="repeat" value="sa"  ${data._repeatingDays.sa && `checked`} />
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-sa-5" name="repeat" value="sa" ${data._repeatingDays.sa && `checked`}/>
               <label class="card__repeat-day" for="repeat-sa-5">sa</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-su-5" name="repeat" value="su" ${data._repeatingDays.su && `checked`} />
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-su-5" name="repeat" value="su" ${data._repeatingDays.su && `checked`}/>
               <label class="card__repeat-day" for="repeat-su-5">su</label>
             </div>
             </fieldset>
