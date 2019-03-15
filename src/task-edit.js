@@ -3,7 +3,6 @@
 import Component from './component.js';
 import taskTemplate from './task-template.js';
 import flatpickr from 'flatpickr';
-import moment from 'moment';
 
 class TaskEdit extends Component {
   constructor(data) {
