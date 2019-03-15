@@ -145,7 +145,7 @@ class TaskEdit extends Component {
         taskEditMapper[property](value);
       }
     }
-    console.log(entry.dueDate)
+
     return entry;
   }
 
