@@ -3,6 +3,7 @@
 import Component from './component.js';
 import taskTemplate from './task-template.js';
 import flatpickr from 'flatpickr';
+import moment from 'moment';
 
 class TaskEdit extends Component {
   constructor(data) {
@@ -18,7 +19,7 @@ class TaskEdit extends Component {
     this._isDeadline = data.isDeadline;
 
     this._state.isEdit = true;
-    this._state.isDate = false;
+    this._state.isDate = true;
     this._state.isRepeated = this._isRepeated();
 
     this._onSubmit = null;
@@ -47,6 +48,10 @@ class TaskEdit extends Component {
 
   _onChangeDate() {
     this._state.isDate = !this._state.isDate;
+    if (!this._state.isDate) {
+      this._dueDate.date = ``;
+      this._dueDate.time = ``;
+    }
     this.removeListeners();
     this._partialUpdate();
     this.createListeners();
@@ -102,6 +107,12 @@ class TaskEdit extends Component {
   update(data) {
     this._label = data.label;
     this._color = data.color;
+    this._dueDate = data.dueDate;
+
+    if (this._dueDate.date === `` && this._dueDate.time === `` && this._state.isDate === true) {
+      this._state.isDate = false;
+    }
+
     this._repeatingDays = data.repeatingDays;
     this._state.isRepeated = this._isRepeated();
   }
@@ -118,6 +129,10 @@ class TaskEdit extends Component {
         fr: false,
         sa: false,
         su: false
+      },
+      dueDate: {
+        date: ``,
+        time: ``
       }
     };
 
@@ -130,7 +145,7 @@ class TaskEdit extends Component {
         taskEditMapper[property](value);
       }
     }
-
+    console.log(entry.dueDate)
     return entry;
   }
 
@@ -144,6 +159,12 @@ class TaskEdit extends Component {
       },
       repeat: (value) => {
         target.repeatingDays[value] = true;
+      },
+      date: (value) => {
+        target.dueDate.date = value;
+      },
+      time: (value) => {
+        target.dueDate.time = value;
       }
     };
   }

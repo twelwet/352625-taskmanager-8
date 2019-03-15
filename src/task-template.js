@@ -1,9 +1,6 @@
 // task-template.js
 
 import {COLORS} from './mock-data.js';
-import moment from 'moment';
-
-const mockDate = `2019-01-01 08:45`;
 
 const taskTemplate = (data) => `
 <article class="card card--${data._color} ${data._isDeadline ? `card--deadline` : ``} ${data._state.isRepeated ? `card--repeat` : ``} ${data._state.isEdit ? `card--edit` : ``}">
@@ -49,7 +46,8 @@ const taskTemplate = (data) => `
                   type="text"
                   placeholder="23 September"
                   name="date"
-                  value="${moment(mockDate).format(`D MMMM`)}"
+                  value="${data._dueDate.date}"
+                  required
                 />
               </label>
               <label class="card__input-deadline-wrap">
@@ -58,7 +56,7 @@ const taskTemplate = (data) => `
                   type="text"
                   placeholder="11:15 PM"
                   name="time"
-                  value="${moment(mockDate).format(`HH:mm`)}"
+                  value="${data._dueDate.time}"
                 />
               </label>
             </fieldset>

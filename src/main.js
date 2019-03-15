@@ -32,6 +32,7 @@ taskComponent.onEdit = () => {
 editTaskComponent.onSubmit = (newObject) => {
   task.label = newObject.label;
   task.color = newObject.color;
+  task.dueDate = newObject.dueDate;
   task.repeatingDays = newObject.repeatingDays;
   taskComponent.update(task);
   taskComponent.render();

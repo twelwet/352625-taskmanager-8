@@ -18,7 +18,7 @@ class Task extends Component {
 
     this._state = {
       isEdit: false,
-      isDate: false,
+      isDate: true,
       isRepeated: this._isRepeated()
     };
 
