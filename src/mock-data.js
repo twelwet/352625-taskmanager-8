@@ -1,10 +1,10 @@
 // mock-data.js
 
 import {getRandomInteger} from './utils.js';
+import moment from 'moment';
 
 const COLORS = [`black`, `yellow`, `blue`, `green`, `pink`];
 const LABELS = [`Изучить теорию`, `Сделать домашку`, `Пройти интенсив на соточку`];
-const MONTHS = [`january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`];
 const WEEK = 604800000; // ms
 const ALL_HASHTAGS = [`homework`, `theory`, `practice`, `intensive`, `keks`];
 
@@ -60,10 +60,8 @@ const filters = [
 const getRandomDate = () => {
   const randomDate = new Date(Date.now() + getRandomInteger(-WEEK, WEEK));
   return {
-    date: randomDate.getDate(),
-    month: MONTHS[randomDate.getMonth()],
-    hours: randomDate.getHours(),
-    minutes: randomDate.getMinutes()
+    date: moment(randomDate).format(`D MMMM`),
+    time: moment(randomDate).format(`HH:mm`)
   };
 };
 
@@ -75,7 +73,7 @@ const getRandomHashtags = (max = 3) => {
       hashtags.add(ALL_HASHTAGS[getRandomIndex(ALL_HASHTAGS)]);
     } while (hashtags.size < count);
   }
-  return [...hashtags];
+  return hashtags;
 };
 
 const createTask = () => {
@@ -85,16 +83,15 @@ const createTask = () => {
     tags: getRandomHashtags(),
     picture: `http://picsum.photos/100/100?r=${Math.random()}`,
     color: COLORS[getRandomIndex(COLORS)],
-    repeatingDays: [
-      [`mo`, Boolean(getRandomInteger(0, 1))],
-      [`tu`, Boolean(getRandomInteger(0, 1))],
-      [`we`, Boolean(getRandomInteger(0, 1))],
-      [`th`, Boolean(getRandomInteger(0, 1))],
-      [`fr`, Boolean(getRandomInteger(0, 1))],
-      [`sa`, Boolean(getRandomInteger(0, 1))],
-      [`su`, Boolean(getRandomInteger(0, 1))]
-    ],
-    isRepeat: Boolean(getRandomInteger(0, 1)),
+    repeatingDays: {
+      mo: Boolean(getRandomInteger(0, 0)),
+      tu: Boolean(getRandomInteger(0, 1)),
+      we: Boolean(getRandomInteger(0, 0)),
+      th: Boolean(getRandomInteger(0, 1)),
+      fr: Boolean(getRandomInteger(0, 0)),
+      sa: Boolean(getRandomInteger(0, 0)),
+      su: Boolean(getRandomInteger(0, 0))
+    },
     isFavorite: true,
     isDone: false,
     isDeadline: Boolean(getRandomInteger(0, 1))
