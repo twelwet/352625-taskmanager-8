@@ -1,21 +1,22 @@
 // task-template.js
 
 import {COLORS} from './mock-data.js';
+import moment from 'moment';
 
 const taskTemplate = (data) => `
-<article class="card card--${data._color} ${data._isDeadline ? `card--deadline` : ``} ${data._state.isRepeated ? `card--repeat` : ``} ${data._state.isEdit ? `card--edit` : ``}">
+<article class="card card--${data._color} ${data._state.isDeadline ? `card--deadline` : ``} ${data._state.isRepeated ? `card--repeat` : ``} ${data._state.isEdit ? `card--edit` : ``}">
   <form class="card__form" method="get">
     <div class="card__inner">
       <div class="card__control">
         <button type="button" class="card__btn card__btn--edit">
           edit
         </button>
-        <button type="button" class="card__btn card__btn--archive">
+        <button type="button" class="card__btn card__btn--archive ${data._state.isArchive ? `` : `card__btn--disabled`}">
           archive
         </button>
         <button
           type="button"
-          class="card__btn card__btn--favorites card__btn--disabled">
+          class="card__btn card__btn--favorites ${data._state.isFavorite ? `` : `card__btn--disabled`}">
           favorites
         </button>
       </div>
@@ -46,7 +47,7 @@ const taskTemplate = (data) => `
                   type="text"
                   placeholder="23 September"
                   name="date"
-                  value="${data._dueDate.date}"
+                  value="${moment(data._dueDate).format(`D MMMM`)}"
                   required
                 />
               </label>
@@ -56,7 +57,7 @@ const taskTemplate = (data) => `
                   type="text"
                   placeholder="11:15 PM"
                   name="time"
-                  value="${data._dueDate.time}"
+                  value="${moment(data._dueDate).format(`h:mm A`)}"
                 />
               </label>
             </fieldset>
@@ -65,20 +66,20 @@ const taskTemplate = (data) => `
             </button>
             <fieldset class="card__repeat-days" ${!data._state.isRepeated && `disabled`}>
             <div class="card__repeat-days-inner">
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-mo-5" name="repeat" value="mo" ${data._repeatingDays.mo && `checked`}/>
-              <label class="card__repeat-day" for="repeat-mo-5">mo</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-tu-5" name="repeat" value="tu" ${data._repeatingDays.tu && `checked`}/>
-              <label class="card__repeat-day" for="repeat-tu-5">tu</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-we-5" name="repeat" value="we" ${data._repeatingDays.we && `checked`}/>
-              <label class="card__repeat-day" for="repeat-we-5">we</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-th-5" name="repeat" value="th" ${data._repeatingDays.th && `checked`}/>
-              <label class="card__repeat-day" for="repeat-th-5">th</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-fr-5" name="repeat" value="fr" ${data._repeatingDays.fr && `checked`}/>
-              <label class="card__repeat-day" for="repeat-fr-5">fr</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-sa-5" name="repeat" value="sa" ${data._repeatingDays.sa && `checked`}/>
-              <label class="card__repeat-day" for="repeat-sa-5">sa</label>
-              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-su-5" name="repeat" value="su" ${data._repeatingDays.su && `checked`}/>
-              <label class="card__repeat-day" for="repeat-su-5">su</label>
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-mo-${data._id}" name="repeat" value="mo" ${data._repeatingDays.mo && `checked`}/>
+              <label class="card__repeat-day" for="repeat-mo-${data._id}">mo</label>
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-tu-${data._id}" name="repeat" value="tu" ${data._repeatingDays.tu && `checked`}/>
+              <label class="card__repeat-day" for="repeat-tu-${data._id}">tu</label>
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-we-${data._id}" name="repeat" value="we" ${data._repeatingDays.we && `checked`}/>
+              <label class="card__repeat-day" for="repeat-we-${data._id}">we</label>
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-th-${data._id}" name="repeat" value="th" ${data._repeatingDays.th && `checked`}/>
+              <label class="card__repeat-day" for="repeat-th-${data._id}">th</label>
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-fr-${data._id}" name="repeat" value="fr" ${data._repeatingDays.fr && `checked`}/>
+              <label class="card__repeat-day" for="repeat-fr-${data._id}">fr</label>
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-sa-${data._id}" name="repeat" value="sa" ${data._repeatingDays.sa && `checked`}/>
+              <label class="card__repeat-day" for="repeat-sa-${data._id}">sa</label>
+              <input class="visually-hidden card__repeat-day-input" type="checkbox" id="repeat-su-${data._id}" name="repeat" value="su" ${data._repeatingDays.su && `checked`}/>
+              <label class="card__repeat-day" for="repeat-su-${data._id}">su</label>
             </div>
             </fieldset>
           </div>
@@ -119,14 +120,14 @@ const taskTemplate = (data) => `
             ${(Array.from(COLORS).map((color) => (`
               <input
                 type="radio"
-                id="color-${color}-1"
+                id="color-${color}-${data._id}"
                 class="card__color-input card__color-input--${color} visually-hidden"
                 name="color"
                 value="${color}"
                 ${(color === data._color) ? `checked` : ``}
               />
               <label
-                for="color-${color}-1"
+                for="color-${color}-${data._id}"
                 class="card__color card__color--${color}">${color}</label>`.trim()))).join(``)}
           </div>
         </div>
