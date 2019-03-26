@@ -14,14 +14,11 @@ class Task extends Component {
     this._picture = data.picture;
     this._color = data.color;
     this._repeatingDays = data.repeatingDays;
-    this._isFavorite = data.isFavorite;
-    this._isArchive = data.isArchive;
     this._isDone = data.isDone;
+    this._isFavorite = data.isFavorite;
 
     this._state = {
       isEdit: false,
-      isArchive: data.isArchive,
-      isFavorite: data.isFavorite,
       isDate: true,
       isRepeated: this._isRepeated(),
       isDeadline: this._isDeadline()
@@ -66,9 +63,9 @@ class Task extends Component {
     this._color = data.color;
     this._dueDate = data.dueDate;
     this._repeatingDays = data.repeatingDays;
+    this._isDone = data.isDone;
+    this._isFavorite = data.isFavorite;
     this._state.isRepeated = this._isRepeated();
-    this._state.isArchive = data.isArchive;
-    this._state.isFavorite = data.isFavorite;
   }
 }
 

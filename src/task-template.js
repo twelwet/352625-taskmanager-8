@@ -11,12 +11,12 @@ const taskTemplate = (data) => `
         <button type="button" class="card__btn card__btn--edit">
           edit
         </button>
-        <button type="button" class="card__btn card__btn--archive ${data._state.isArchive ? `` : `card__btn--disabled`}">
+        <button type="button" class="card__btn card__btn--archive ${data._isDone ? `` : `card__btn--disabled`}">
           archive
         </button>
         <button
           type="button"
-          class="card__btn card__btn--favorites ${data._state.isFavorite ? `` : `card__btn--disabled`}">
+          class="card__btn card__btn--favorites ${data._isFavorite ? `` : `card__btn--disabled`}">
           favorites
         </button>
       </div>
@@ -31,6 +31,7 @@ const taskTemplate = (data) => `
             class="card__text"
             placeholder="Start typing your text here..."
             name="text"
+            ${data._state.isEdit ? `` : `disabled`}
           >${data._label}</textarea>
         </label>
       </div>
@@ -45,19 +46,21 @@ const taskTemplate = (data) => `
                 <input
                   class="card__date"
                   type="text"
-                  placeholder="23 September"
+                  placeholder="${data._state.isEdit ? `23 September` : ``}"
                   name="date"
-                  value="${moment(data._dueDate).format(`D MMMM`)}"
+                  value="${data._dueDate === null ? `` : moment(data._dueDate).format(`D MMMM`)}"
                   required
+                  ${data._state.isEdit ? `` : `disabled`}
                 />
               </label>
               <label class="card__input-deadline-wrap">
                 <input
                   class="card__time"
                   type="text"
-                  placeholder="11:15 PM"
+                  placeholder="${data._state.isEdit ? `11:15 PM` : ``}"
                   name="time"
-                  value="${moment(data._dueDate).format(`h:mm A`)}"
+                  value="${data._dueDate === null ? `` : moment(data._dueDate).format(`h:mm A`)}"
+                  ${data._state.isEdit ? `` : `disabled`}
                 />
               </label>
             </fieldset>

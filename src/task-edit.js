@@ -16,11 +16,10 @@ class TaskEdit extends Component {
     this._color = data.color;
     this._repeatingDays = data.repeatingDays;
     this._isDone = data.isDone;
+    this._isFavorite = data.isFavorite;
 
     this._state = {
       isEdit: true,
-      isArchive: data.isArchive,
-      isFavorite: data.isFavorite,
       isDate: true,
       isRepeated: this._isRepeated(),
       isDeadline: this._isDeadline()
@@ -40,14 +39,16 @@ class TaskEdit extends Component {
   }
 
   _onFavoritesButtonClick() {
-    this._state.isFavorite = !this._state.isFavorite;
+    this._isFavorite = !this._isFavorite;
+
     this.removeListeners();
     this._partialUpdate();
     this.createListeners();
   }
 
   _onArchiveButtonClick() {
-    this._state.isArchive = !this._state.isArchive;
+    this._isDone = !this._isDone;
+
     this.removeListeners();
     this._partialUpdate();
     this.createListeners();
@@ -67,10 +68,14 @@ class TaskEdit extends Component {
     const formData = new FormData(this._element.querySelector(`.card__form`));
     const newData = TaskEdit.processForm(formData);
 
-    // Здесь так и не разобрался к сожалению...
-    newData.isArchive = this._state.isArchive;
-    newData.isFavorite = this._state.isFavorite;
-    newData.dueDate = moment(`2019 ${newData.date} ${newData.time}`);
+    newData.isDone = this._isDone;
+    newData.isFavorite = this._isFavorite;
+
+    if (moment(newData.date).unix() > 0) {
+      newData.dueDate = moment(`${newData.date} ${newData.time}`, `D MMMM h:mm A`).unix() * 1000; // s => ms
+    } else {
+      newData.dueDate = null;
+    }
 
     if (typeof this._onSubmit === `function`) {
       this._onSubmit(newData);
@@ -81,9 +86,11 @@ class TaskEdit extends Component {
 
   _onChangeDate() {
     this._state.isDate = !this._state.isDate;
+
     if (!this._state.isDate) {
-      this._dueDate = {};
+      this._dueDate = null;
     }
+
     this.removeListeners();
     this._partialUpdate();
     this.createListeners();
@@ -91,6 +98,7 @@ class TaskEdit extends Component {
 
   _onChangeRepeated() {
     this._state.isRepeated = !this._state.isRepeated;
+
     this.removeListeners();
     this._partialUpdate();
     this.createListeners();
@@ -127,6 +135,7 @@ class TaskEdit extends Component {
     this._element.querySelector(`.card__delete`).addEventListener(`click`, this._onDeleteButtonClick);
 
     if (this._state.isDate) {
+      console.log(`Flatpickr!`)
       flatpickr(`.card__date`, {
         altInput: true, altFormat: `j F`,
         dateFormat: `j F`
@@ -154,16 +163,18 @@ class TaskEdit extends Component {
   update(data) {
     this._label = data.label;
     this._color = data.color;
-    this._dueDate = data.dueDate;
 
-    if (this._dueDate === `` && this._state.isDate === true) {
+    this._dueDate = data.dueDate;
+    console.log(this._dueDate);
+    console.log(this._state.isDate);
+    if (this._dueDate === null && this._state.isDate === true) {
       this._state.isDate = false;
     }
 
     this._repeatingDays = data.repeatingDays;
+    this._isDone = data.isDone;
+    this._isFavorite = data.isFavorite;
     this._state.isRepeated = this._isRepeated();
-    this._state.isArchive = data.isArchive;
-    this._state.isFavorite = data.isFavorite;
   }
 
   static processForm(formData) {
@@ -192,7 +203,8 @@ class TaskEdit extends Component {
         taskEditMapper[property](value);
       }
     }
-
+    console.log(`Date: ${entry.date}`)
+    console.log(`Time: ${entry.time}`)
     return entry;
   }
 

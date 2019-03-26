@@ -37,7 +37,7 @@ const filterTasks = (tasks, filterName) => {
       return tasks.filter((it) => [...it.tags].some((rec) => rec[1]));
 
     case `filter__archive`:
-      return tasks.filter((it) => it.isArchive === true);
+      return tasks.filter((it) => it.isDone === true);
 
     default:
       throw new Error(`Unknown filter name`);
@@ -69,6 +69,7 @@ const renderTasks = (tasks) => {
       editTaskComponent.render();
       tasksContainer.replaceChild(editTaskComponent.element, taskComponent.element);
       taskComponent.unrender();
+      editTaskComponent.createListeners();
     };
 
     editTaskComponent.onSubmit = (newObject) => {
@@ -77,7 +78,7 @@ const renderTasks = (tasks) => {
       task.dueDate = newObject.dueDate;
       task.repeatingDays = newObject.repeatingDays;
       task.isFavorite = newObject.isFavorite;
-      task.isArchive = newObject.isArchive;
+      task.isDone = newObject.isDone;
       taskComponent.update(task);
       taskComponent.render();
       tasksContainer.replaceChild(taskComponent.element, editTaskComponent.element);
