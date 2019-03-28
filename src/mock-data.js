@@ -1,7 +1,6 @@
 // mock-data.js
 
 import {getRandomInteger} from './utils.js';
-import moment from 'moment';
 
 const COLORS = [`black`, `yellow`, `blue`, `green`, `pink`];
 const LABELS = [`Изучить теорию`, `Сделать домашку`, `Пройти интенсив на соточку`];
@@ -108,5 +107,5 @@ const createTasks = () => {
 
 // Имитация загрузки данных с сервера
 const downloaded = {filters, tasks: createTasks()};
-console.log(moment(moment("12-25", "MM-DD").unix() * 1000).format(`DD-MM-YYYY`))
+
 export {COLORS, downloaded};

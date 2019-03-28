@@ -71,8 +71,8 @@ class TaskEdit extends Component {
     newData.isDone = this._isDone;
     newData.isFavorite = this._isFavorite;
 
-    if (moment(newData.date).unix() > 0) {
-      newData.dueDate = moment(`${newData.date} ${newData.time}`, `D MMMM h:mm A`).unix() * 1000; // s => ms
+    if (moment(newData.date).isValid() > 0) {
+      newData.dueDate = moment(`${newData.date} ${newData.time}`, `D MMMM h:mm A`).valueOf(); // timestamp in ms
     } else {
       newData.dueDate = null;
     }
@@ -135,7 +135,7 @@ class TaskEdit extends Component {
     this._element.querySelector(`.card__delete`).addEventListener(`click`, this._onDeleteButtonClick);
 
     if (this._state.isDate) {
-      console.log(`Flatpickr!`)
+
       flatpickr(`.card__date`, {
         altInput: true, altFormat: `j F`,
         dateFormat: `j F`
@@ -165,8 +165,7 @@ class TaskEdit extends Component {
     this._color = data.color;
 
     this._dueDate = data.dueDate;
-    console.log(this._dueDate);
-    console.log(this._state.isDate);
+
     if (this._dueDate === null && this._state.isDate === true) {
       this._state.isDate = false;
     }
@@ -203,8 +202,7 @@ class TaskEdit extends Component {
         taskEditMapper[property](value);
       }
     }
-    console.log(`Date: ${entry.date}`)
-    console.log(`Time: ${entry.time}`)
+
     return entry;
   }
 
