@@ -108,4 +108,4 @@ const createTasks = () => {
 // Имитация загрузки данных с сервера
 const downloaded = {filters, tasks: createTasks()};
 
-export {COLORS, downloaded};
+export {COLORS, WEEK, downloaded};
