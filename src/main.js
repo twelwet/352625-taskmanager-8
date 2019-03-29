@@ -7,6 +7,7 @@ import Filter from './filter.js';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
 import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const filtersContainer = document.querySelector(`.main__filter`);
 
@@ -137,8 +138,14 @@ flatpickr(statPeriod, {
   defaultDate: [getDate().now, getDate().plusWeek]
 });
 
-const tagsCtx = document.querySelector(`.statistic__tags`);
+const tagsWrap = document.querySelector(`.statistic__tags-wrap`);
+const colorWrap = document.querySelector(`.statistic__colors-wrap`);
+tagsWrap.classList.remove(`visually-hidden`);
+colorWrap.classList.remove(`visually-hidden`);
+
+const tagsCtx = tagsWrap.querySelector(`.statistic__tags`);
 const colorsCtx = document.querySelector(`.statistic__colors`);
+
 
 // В разрезе тегов
 const tagsChart = new Chart(tagsCtx, {
@@ -249,3 +256,6 @@ const colorsChart = new Chart(colorsCtx, {
     }
   }
 });
+
+tagsChart.destroy();
+colorsChart.destroy();
