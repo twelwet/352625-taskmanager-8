@@ -3,36 +3,17 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const getTagsBunch = (tasks) => {
-  const bunch = [];
-
-  for (const task of tasks) {
-    for (const tag of [...task.tags]) {
-      bunch.push(tag);
-    }
-  }
-  return bunch;
-};
 
 const getTagsStat = (tasks) => {
-  const doneTasks = tasks.filter((it) => it.isDone === true);
-  const bunch = getTagsBunch(doneTasks);
-  const uniqueTags = [...new Set(bunch)];
-
-  const names = [];
-  const quantites = [];
-  for (const tag of uniqueTags) {
-    names.push(`#${tag}`);
-    quantites.push(bunch.filter((it) => it === tag).length);
-  }
-
-  return {names, quantites};
+  const doneTasks = tasks.filter((it) => it.isDone);
+  const bunch = [].concat(...doneTasks.map((task) => task.tags));
+  const names = [...new Set(bunch)];
+  const quantites = names.map((tag) => bunch.filter((it) => it === tag).length);
+  // тут лучше сделать наоборот, обойти задачи и посчитать теги, раз у каждой задачи много тегов
+  return {names: names.map((tag) => `#${tag}`), quantites};
 };
 
-const tagsWrap = document.querySelector(`.statistic__tags-wrap`);
-const tagsCtx = tagsWrap.querySelector(`.statistic__tags`);
-
-const getTagsChart = () => new Chart(tagsCtx, {
+const getTagsChart = (tagsCtx) => new Chart(tagsCtx, {
   plugins: [ChartDataLabels],
   type: `pie`,
   data: {
@@ -43,6 +24,7 @@ const getTagsChart = () => new Chart(tagsCtx, {
     }]
   },
   options: {
+    responsive: false,
     plugins: {
       datalabels: {
         display: false
@@ -86,4 +68,4 @@ const getTagsChart = () => new Chart(tagsCtx, {
   }
 });
 
-export {getTagsStat, getTagsChart, tagsWrap};
+export {getTagsStat, getTagsChart};

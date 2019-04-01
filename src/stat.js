@@ -1,13 +1,24 @@
 // stat.js
 
 import {downloaded, WEEK} from './mock-data.js';
-import {getTagsStat, getTagsChart, tagsWrap} from './stat-tags.js';
-import {getColorsStat, getColorsChart, colorsWrap} from './stat-colors.js';
+import {getTagsStat, getTagsChart} from './stat-tags.js';
+import {getColorsStat, getColorsChart} from './stat-colors.js';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
 
 const taskBoard = document.querySelector(`.board`);
 const statContainer = document.querySelector(`.statistic`);
+
+const tagsWrap = document.querySelector(`.statistic__tags-wrap`);
+const tagsCtx = tagsWrap.querySelector(`.statistic__tags`);
+
+const colorsWrap = document.querySelector(`.statistic__colors-wrap`);
+const colorsCtx = colorsWrap.querySelector(`.statistic__colors`);
+colorsWrap.classList.remove(`visually-hidden`);
+
+// один раз инициализируем Chart, дальше с ним работаем, в функциях он доступен через замыкание
+const tagsChart = getTagsChart(tagsCtx);
+const colorsChart = getColorsChart(colorsCtx);
 
 const showTaskBoard = () => taskBoard.classList.remove(`visually-hidden`);
 const hideTaskBoard = () => taskBoard.classList.add(`visually-hidden`);
@@ -17,21 +28,18 @@ const hideStat = () => statContainer.classList.add(`visually-hidden`);
 
 const activateTagsStat = () => {
   tagsWrap.classList.remove(`visually-hidden`);
-
-  const tagsChart = getTagsChart();
-  tagsChart.data.datasets[0].data = getTagsStat(downloaded.tasks).quantites;
-  tagsChart.data.labels = getTagsStat(downloaded.tasks).names;
+  const {quantites, names} = getTagsStat(downloaded.tasks);
+  tagsChart.data.datasets[0].data = quantites;
+  tagsChart.data.labels = names;
 
   tagsChart.update();
 };
 
 const activateColorsStat = () => {
-  colorsWrap.classList.remove(`visually-hidden`);
-
-  const colorsChart = getColorsChart();
-  colorsChart.data.datasets[0].data = getColorsStat(downloaded.tasks).quantites;
-  colorsChart.data.datasets[0].backgroundColor = getColorsStat(downloaded.tasks).colors;
-  colorsChart.data.labels = getColorsStat(downloaded.tasks).colors;
+  const {quantites, colors} = getColorsStat(downloaded.tasks);
+  colorsChart.data.datasets[0].data = quantites;
+  colorsChart.data.datasets[0].backgroundColor = colors;
+  colorsChart.data.labels = colors;
 
   colorsChart.update();
 };

@@ -3,34 +3,17 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const getColorsBunch = (tasks) => {
-  const bunch = [];
-
-  for (const task of tasks) {
-    bunch.push(task.color);
-  }
-  return bunch;
-};
 
 const getColorsStat = (tasks) => {
   const doneTasks = tasks.filter((it) => it.isDone === true);
-  const bunch = getColorsBunch(doneTasks);
-  const uniqueColors = [...new Set(bunch)];
-
-  const colors = [];
-  const quantites = [];
-  for (const color of uniqueColors) {
-    colors.push(color);
-    quantites.push(bunch.filter((it) => it === color).length);
-  }
+  const bunch = doneTasks.map(({color}) => color);
+  const colors = [...new Set(bunch)];
+  const quantites = colors.map((color) => bunch.filter((it) => it === color).length);
 
   return {colors, quantites};
 };
 
-const colorsWrap = document.querySelector(`.statistic__colors-wrap`);
-const colorsCtx = colorsWrap.querySelector(`.statistic__colors`);
-
-const getColorsChart = () => new Chart(colorsCtx, {
+const getColorsChart = (colorsCtx) => new Chart(colorsCtx, {
   plugins: [ChartDataLabels],
   type: `pie`,
   data: {
@@ -84,4 +67,4 @@ const getColorsChart = () => new Chart(colorsCtx, {
   }
 });
 
-export {getColorsStat, getColorsChart, colorsWrap};
+export {getColorsStat, getColorsChart};
