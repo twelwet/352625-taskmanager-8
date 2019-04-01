@@ -5,7 +5,7 @@ import Task from './task.js';
 import TaskEdit from './task-edit.js';
 import Filter from './filter.js';
 import moment from 'moment';
-import {tagsChart, colorsChart} from './stat.js';
+import {showTaskBoard, hideTaskBoard, showStat, hideStat, activateTagsStat, activateColorsStat} from './stat.js';
 
 const filtersContainer = document.querySelector(`.main__filter`);
 
@@ -97,5 +97,17 @@ const renderTasks = (tasks) => {
 
 renderTasks(downloaded.tasks);
 
-// tagsChart.update();
-// colorsChart.update();
+const tasksButton = document.querySelector(`#control__task`);
+const statButton = document.querySelector(`#control__statistic`);
+
+statButton.addEventListener(`click`, () => {
+  hideTaskBoard();
+  showStat();
+  activateTagsStat();
+  activateColorsStat();
+});
+
+tasksButton.addEventListener(`click`, () => {
+  hideStat();
+  showTaskBoard();
+});

@@ -1,16 +1,13 @@
 // stat.js
 
 import {downloaded, WEEK} from './mock-data.js';
-import activateTagsStat from './stat-tags.js';
-import activateColorsStat from './stat-colors.js';
+import {getTagsStat, getTagsChart, tagsWrap} from './stat-tags.js';
+import {getColorsStat, getColorsChart, colorsWrap} from './stat-colors.js';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
 
 const taskBoard = document.querySelector(`.board`);
 const statContainer = document.querySelector(`.statistic`);
-
-const tasksButton = document.querySelector(`#control__task`);
-const statButton = document.querySelector(`#control__statistic`);
 
 const showTaskBoard = () => taskBoard.classList.remove(`visually-hidden`);
 const hideTaskBoard = () => taskBoard.classList.add(`visually-hidden`);
@@ -18,18 +15,26 @@ const hideTaskBoard = () => taskBoard.classList.add(`visually-hidden`);
 const showStat = () => statContainer.classList.remove(`visually-hidden`);
 const hideStat = () => statContainer.classList.add(`visually-hidden`);
 
-statButton.addEventListener(`click`, () => {
-  hideTaskBoard();
-  showStat();
-  console.log(downloaded.tasks.filter((it) => it.isDone === true));
-  activateTagsStat();
-  activateColorsStat();
-});
+const activateTagsStat = () => {
+  tagsWrap.classList.remove(`visually-hidden`);
 
-tasksButton.addEventListener(`click`, () => {
-  hideStat();
-  showTaskBoard();
-});
+  const tagsChart = getTagsChart();
+  tagsChart.data.datasets[0].data = getTagsStat(downloaded.tasks).quantites;
+  tagsChart.data.labels = getTagsStat(downloaded.tasks).names;
+
+  tagsChart.update();
+};
+
+const activateColorsStat = () => {
+  colorsWrap.classList.remove(`visually-hidden`);
+
+  const colorsChart = getColorsChart();
+  colorsChart.data.datasets[0].data = getColorsStat(downloaded.tasks).quantites;
+  colorsChart.data.datasets[0].backgroundColor = getColorsStat(downloaded.tasks).colors;
+  colorsChart.data.labels = getColorsStat(downloaded.tasks).colors;
+
+  colorsChart.update();
+};
 
 const statPeriod = statContainer.querySelector(`.statistic__period-input`);
 
@@ -48,4 +53,4 @@ flatpickr(statPeriod, {
   defaultDate: [getDate().now, getDate().plusWeek]
 });
 
-// export {tagsChart, colorsChart};
+export {showTaskBoard, hideTaskBoard, showStat, hideStat, activateTagsStat, activateColorsStat};
