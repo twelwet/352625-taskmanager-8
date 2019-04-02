@@ -2,11 +2,11 @@
 
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
+import {duration} from './stat.js';
 
 const getTagsStat = (tasks) => {
-  const doneTasks = tasks.filter((it) => it.isDone);
-  const bunch = [].concat(...doneTasks.map((task) => task.tags));
+  const doneTasks = tasks.filter((it) => it.isDone && it.dueDate >= duration[0] && it.dueDate <= duration[1]);
+  const bunch = [].concat(...doneTasks.map((task) => Array.from(task.tags)));
   const names = [...new Set(bunch)];
   const quantites = names.map((tag) => bunch.filter((it) => it === tag).length);
   // тут лучше сделать наоборот, обойти задачи и посчитать теги, раз у каждой задачи много тегов

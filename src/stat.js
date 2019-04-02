@@ -54,11 +54,28 @@ const getDate = () => {
   };
 };
 
-flatpickr(statPeriod, {
+const statDate = flatpickr(statPeriod, {
   mode: `range`,
   altInput: true, altFormat: `j F`,
   dateFormat: `j F`,
-  defaultDate: [getDate().now, getDate().plusWeek]
+  defaultDate: [getDate().now, getDate().plusWeek],
+  onClose: (evt) => {
+    updateDuration(evt);
+    activateTagsStat();
+    activateColorsStat();
+  }
 });
 
-export {showTaskBoard, hideTaskBoard, showStat, hideStat, activateTagsStat, activateColorsStat};
+let duration = [
+  moment(statDate.config.defaultDate[0], `D MMMM 2019`).valueOf(),
+  moment(statDate.config.defaultDate[1], `D MMMM 2019`).valueOf()
+];
+
+const updateDuration = (evt) => {
+  duration = [
+    moment(evt[0]).valueOf(),
+    moment(evt[1]).valueOf()
+  ];
+};
+
+export {showTaskBoard, hideTaskBoard, showStat, hideStat, activateTagsStat, activateColorsStat, duration};

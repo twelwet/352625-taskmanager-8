@@ -2,10 +2,10 @@
 
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
+import {duration} from './stat.js';
 
 const getColorsStat = (tasks) => {
-  const doneTasks = tasks.filter((it) => it.isDone === true);
+  const doneTasks = tasks.filter((it) => it.isDone && it.dueDate >= duration[0] && it.dueDate <= duration[1]);
   const bunch = doneTasks.map(({color}) => color);
   const colors = [...new Set(bunch)];
   const quantites = colors.map((color) => bunch.filter((it) => it === color).length);
