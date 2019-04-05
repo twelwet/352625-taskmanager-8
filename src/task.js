@@ -2,24 +2,26 @@
 
 import Component from './component.js';
 import taskTemplate from './task-template.js';
+import moment from 'moment';
 
 class Task extends Component {
   constructor(data) {
     super();
+    this._id = data.id;
     this._label = data.label;
     this._dueDate = data.dueDate;
     this._tags = data.tags;
     this._picture = data.picture;
     this._color = data.color;
     this._repeatingDays = data.repeatingDays;
-    this._isFavorite = data.isFavorite;
     this._isDone = data.isDone;
-    this._isDeadline = data.isDeadline;
+    this._isFavorite = data.isFavorite;
 
     this._state = {
       isEdit: false,
       isDate: true,
-      isRepeated: this._isRepeated()
+      isRepeated: this._isRepeated(),
+      isDeadline: this._isDeadline()
     };
 
     this._onEdit = null;
@@ -28,6 +30,10 @@ class Task extends Component {
 
   _isRepeated() {
     return Object.values(this._repeatingDays).some((it) => it === true);
+  }
+
+  _isDeadline() {
+    return moment(this._dueDate) < moment();
   }
 
   _onEditButtonClick() {
@@ -55,7 +61,10 @@ class Task extends Component {
   update(data) {
     this._label = data.label;
     this._color = data.color;
+    this._dueDate = data.dueDate;
     this._repeatingDays = data.repeatingDays;
+    this._isDone = data.isDone;
+    this._isFavorite = data.isFavorite;
     this._state.isRepeated = this._isRepeated();
   }
 }

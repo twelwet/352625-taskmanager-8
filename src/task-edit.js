@@ -3,33 +3,63 @@
 import Component from './component.js';
 import taskTemplate from './task-template.js';
 import flatpickr from 'flatpickr';
+import moment from 'moment';
 
 class TaskEdit extends Component {
   constructor(data) {
     super();
+    this._id = data.id;
     this._label = data.label;
     this._dueDate = data.dueDate;
     this._tags = data.tags;
     this._picture = data.picture;
     this._color = data.color;
     this._repeatingDays = data.repeatingDays;
-    this._isFavorite = data.isFavorite;
     this._isDone = data.isDone;
-    this._isDeadline = data.isDeadline;
+    this._isFavorite = data.isFavorite;
 
-    this._state.isEdit = true;
-    this._state.isDate = true;
-    this._state.isRepeated = this._isRepeated();
+    this._state = {
+      isEdit: true,
+      isDate: true,
+      isRepeated: this._isRepeated(),
+      isDeadline: this._isDeadline()
+    };
+
+    this._onFavoritesButtonClick = this._onFavoritesButtonClick.bind(this);
+    this._onArchiveButtonClick = this._onArchiveButtonClick.bind(this);
 
     this._onSubmit = null;
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
 
     this._onChangeDate = this._onChangeDate.bind(this);
     this._onChangeRepeated = this._onChangeRepeated.bind(this);
+
+    this._onDelete = null;
+    this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
+  }
+
+  _onFavoritesButtonClick() {
+    this._isFavorite = !this._isFavorite;
+
+    this.removeListeners();
+    this._partialUpdate();
+    this.createListeners();
+  }
+
+  _onArchiveButtonClick() {
+    this._isDone = !this._isDone;
+
+    this.removeListeners();
+    this._partialUpdate();
+    this.createListeners();
   }
 
   _isRepeated() {
     return Object.values(this._repeatingDays).some((it) => it === true);
+  }
+
+  _isDeadline() {
+    return moment(this._dueDate) < moment();
   }
 
   _onSubmitButtonClick(evt) {
@@ -37,6 +67,15 @@ class TaskEdit extends Component {
 
     const formData = new FormData(this._element.querySelector(`.card__form`));
     const newData = TaskEdit.processForm(formData);
+
+    newData.isDone = this._isDone;
+    newData.isFavorite = this._isFavorite;
+
+    if (moment(newData.date).isValid() > 0) {
+      newData.dueDate = moment(`${newData.date} ${newData.time}`, `D MMMM h:mm A`).valueOf(); // timestamp in ms
+    } else {
+      newData.dueDate = null;
+    }
 
     if (typeof this._onSubmit === `function`) {
       this._onSubmit(newData);
@@ -47,10 +86,11 @@ class TaskEdit extends Component {
 
   _onChangeDate() {
     this._state.isDate = !this._state.isDate;
+
     if (!this._state.isDate) {
-      this._dueDate.date = ``;
-      this._dueDate.time = ``;
+      this._dueDate = null;
     }
+
     this.removeListeners();
     this._partialUpdate();
     this.createListeners();
@@ -58,6 +98,7 @@ class TaskEdit extends Component {
 
   _onChangeRepeated() {
     this._state.isRepeated = !this._state.isRepeated;
+
     this.removeListeners();
     this._partialUpdate();
     this.createListeners();
@@ -67,8 +108,18 @@ class TaskEdit extends Component {
     this._element.innerHTML = this.template;
   }
 
+  _onDeleteButtonClick() {
+    if (typeof this._onDelete === `function`) {
+      this._onDelete();
+    }
+  }
+
   set onSubmit(fn) {
     this._onSubmit = fn;
+  }
+
+  set onDelete(fn) {
+    this._onDelete = fn;
   }
 
   get template() {
@@ -76,11 +127,15 @@ class TaskEdit extends Component {
   }
 
   createListeners() {
+    this._element.querySelector(`.card__btn--archive`).addEventListener(`click`, this._onArchiveButtonClick);
+    this._element.querySelector(`.card__btn--favorites`).addEventListener(`click`, this._onFavoritesButtonClick);
     this._element.querySelector(`.card__form`).addEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.card__date-deadline-toggle`).addEventListener(`click`, this._onChangeDate);
     this._element.querySelector(`.card__repeat-toggle`).addEventListener(`click`, this._onChangeRepeated);
+    this._element.querySelector(`.card__delete`).addEventListener(`click`, this._onDeleteButtonClick);
 
     if (this._state.isDate) {
+
       flatpickr(`.card__date`, {
         altInput: true, altFormat: `j F`,
         dateFormat: `j F`
@@ -97,22 +152,27 @@ class TaskEdit extends Component {
   }
 
   removeListeners() {
+    this._element.querySelector(`.card__btn--archive`).removeEventListener(`click`, this._onArchiveButtonClick);
+    this._element.querySelector(`.card__btn--favorites`).removeEventListener(`click`, this._onFavoritesButtonClick);
     this._element.querySelector(`.card__form`).removeEventListener(`submit`, this._onSubmitButtonClick);
     this._element.querySelector(`.card__date-deadline-toggle`).removeEventListener(`click`, this._onChangeDate);
     this._element.querySelector(`.card__repeat-toggle`).removeEventListener(`click`, this._onChangeRepeated);
-
+    this._element.querySelector(`.card__delete`).removeEventListener(`click`, this._onDeleteButtonClick);
   }
 
   update(data) {
     this._label = data.label;
     this._color = data.color;
+
     this._dueDate = data.dueDate;
 
-    if (this._dueDate.date === `` && this._dueDate.time === `` && this._state.isDate === true) {
+    if (this._dueDate === null && this._state.isDate === true) {
       this._state.isDate = false;
     }
 
     this._repeatingDays = data.repeatingDays;
+    this._isDone = data.isDone;
+    this._isFavorite = data.isFavorite;
     this._state.isRepeated = this._isRepeated();
   }
 
@@ -129,10 +189,8 @@ class TaskEdit extends Component {
         sa: false,
         su: false
       },
-      dueDate: {
-        date: ``,
-        time: ``
-      }
+      date: ``,
+      time: ``
     };
 
     const taskEditMapper = TaskEdit.createMapper(entry);
@@ -160,10 +218,10 @@ class TaskEdit extends Component {
         target.repeatingDays[value] = true;
       },
       date: (value) => {
-        target.dueDate.date = value;
+        target.date = value;
       },
       time: (value) => {
-        target.dueDate.time = value;
+        target.time = value;
       }
     };
   }

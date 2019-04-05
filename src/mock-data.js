@@ -1,7 +1,6 @@
 // mock-data.js
 
 import {getRandomInteger} from './utils.js';
-import moment from 'moment';
 
 const COLORS = [`black`, `yellow`, `blue`, `green`, `pink`];
 const LABELS = [`Изучить теорию`, `Сделать домашку`, `Пройти интенсив на соточку`];
@@ -22,13 +21,13 @@ const filters = [
   {
     name: `overdue`,
     checked: false,
-    disabled: true,
+    disabled: false,
     count: getRandomInteger(1, 100)
   },
   {
     name: `today`,
     checked: false,
-    disabled: true,
+    disabled: false,
     count: getRandomInteger(1, 100)
   },
   {
@@ -58,11 +57,7 @@ const filters = [
 ];
 
 const getRandomDate = () => {
-  const randomDate = new Date(Date.now() + getRandomInteger(-WEEK, WEEK));
-  return {
-    date: moment(randomDate).format(`D MMMM`),
-    time: moment(randomDate).format(`HH:mm`)
-  };
+  return Date.now() + getRandomInteger(-WEEK, WEEK);
 };
 
 const getRandomHashtags = (max = 3) => {
@@ -78,6 +73,7 @@ const getRandomHashtags = (max = 3) => {
 
 const createTask = () => {
   const task = {
+    id: null,
     label: LABELS[getRandomIndex(LABELS)],
     dueDate: getRandomDate(),
     tags: getRandomHashtags(),
@@ -92,9 +88,8 @@ const createTask = () => {
       sa: Boolean(getRandomInteger(0, 0)),
       su: Boolean(getRandomInteger(0, 0))
     },
-    isFavorite: true,
-    isDone: false,
-    isDeadline: Boolean(getRandomInteger(0, 1))
+    isFavorite: Boolean(getRandomInteger(0, 1)),
+    isDone: Boolean(getRandomInteger(0, 1))
   };
   return task;
 };
@@ -102,10 +97,15 @@ const createTask = () => {
 const createTasks = () => {
   let tasks = [...(new Array(getRandomInteger(1, 10)))];
   tasks = tasks.map((createTask));
+
+  for (let task of tasks) {
+    task.id = tasks.indexOf(task);
+  }
+
   return tasks;
 };
 
 // Имитация загрузки данных с сервера
 const downloaded = {filters, tasks: createTasks()};
 
-export {COLORS, downloaded};
+export {COLORS, WEEK, downloaded};
